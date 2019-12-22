@@ -1,8 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db.models.signals import post_save
 from django.urls import reverse
 import stripe
+from django.contrib.auth.validators import UnicodeUsernameValidator
 #from product.models import Product
 from django.conf import settings
 import uuid
@@ -66,7 +67,7 @@ class MyUserManager(BaseUserManager):
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        user = self.create_user(
+        user = self.create(
             email,
             username,
             password=password,
@@ -77,16 +78,41 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
+    username_validator = UnicodeUsernameValidator()
+
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True,editable=False)
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=40, unique=True)
-    #super(User, self).__init__()
+    #username = models.CharField(max_length=40, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     date_of_birth = models.DateField()
     date_joined = models.DateTimeField(auto_now_add=True)
     #password = models.CharField(_('password'), validators=settings.AUTH_PASSWORD_VALIDATORS,max_length=128)
+    username = models.CharField(
+        _('username'),
+        max_length=60,
+        unique=True,
+        help_text=_('Required. 60 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
+
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        ),
+    )
 
     banner = BannerManager
     #_password = None
@@ -95,6 +121,14 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username','date_of_birth']
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+
+    def clean(self):
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
 
     def get_short_name():
         return self.username
@@ -157,33 +191,7 @@ class AccountRequest(models.Model):
                 super(AccountRequest, self).save(*args, **kwargs)
         return None
 
-"""  username = models.CharField(
-        _('username'),
-        max_length=150,
-        unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-        validators=[username_validator],
-        error_messages={
-            'unique': _("A user with that username already exists."),
-        },
-    )
 
-
-on new migration, check to see if these are inheritable
-    is_staff = models.BooleanField(
-        _('staff status'),
-        default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
-    )
-    is_active = models.BooleanField(
-        _('active'),
-        default=True,
-        help_text=_(
-            'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
-        ),
-    )
-"""
 
 class Profile(models.Model):
     # user.profile.following -- users i follow
