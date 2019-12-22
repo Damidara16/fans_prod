@@ -7,7 +7,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 #from product.models import Product
 from django.conf import settings
 import uuid
-
+from django.utils.translation import gettext_lazy as _
 #NEW MODELS TO BE MADE
 #POINTS
 #BANK ACCOUNT
