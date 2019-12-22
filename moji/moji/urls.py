@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth.views import login, logout
-
+from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include('account.urls')),
+    url(r'^/$', views.home),
     #url(r'^content/', include('content.urls')),
     #url(r'^home/', include('home.urls')),
     #url(r'^product/', include('product.urls')),
