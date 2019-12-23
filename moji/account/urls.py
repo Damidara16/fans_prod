@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 
 app_name = 'account'
 urlpatterns = [
+    url(r'^home/$',views.func,name='func'),
     url(r'^post/file/$',views.postFile,name='filepost'),
     url(r'^unauth/$',views.unauthed,name='unauthed'),
     url(r'^auth/$',views.authUser),

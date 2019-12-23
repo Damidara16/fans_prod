@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'pages',
     'content',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'corsheaders'
 ]
 
     #'home',
@@ -50,12 +51,14 @@ def verify_following(f_user_following,c_user):
 #FILE_UPLOAD_HANDLERS = []
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'moji.middleware.CorsMiddleware'
     #'moji.middleware.AuthRequiredMiddleware',
     #'moji.middleware.BlockedMiddleware',
 ]

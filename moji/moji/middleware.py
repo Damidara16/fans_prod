@@ -6,6 +6,16 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+class CorsMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response["Access-Control-Allow-Origin"] = "*"
+
+        return response
+
 AUTH_URLS = [re.compile(settings.AUTH_URL.lstrip('/'))]
 if hasattr(settings, 'AUTH_REQUIRED_URLS'):
     AUTH_URLS += [re.compile(url) for url in settings.AUTH_REQUIRED_URLS]

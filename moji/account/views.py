@@ -13,13 +13,19 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.parsers import JSONParser, MultiPartParser
 from django.contrib.auth.views import  logout
 from moji.project_funcs import *
-
+from django.http import HttpResponse
 #follow users
 #crud following
 
 @api_view(['GET'])
 def unauthed(request):
     return Response({'outcome':'unauthed request'})
+
+@api_view(['GET'])
+def func(request):
+    res = Response()
+    res['Access-Control-Allow-Origin'] = '*'
+    return Response({'outcome':'success'})
 
 @api_view(['POST','PUT'])
 @permission_classes([])
@@ -45,6 +51,7 @@ def send_lastSeen(request):
             return Response({'outcome':'retry'})
 
 @api_view(['POST'])
+@permission_classes([])
 def authUser(request):
     #add logout if using sessions with api
     if request.method == "POST":
@@ -58,7 +65,7 @@ def authUser(request):
             else:
                 return Response({'outcome':'failure to authorize','error':user})
         else:
-            return Response({'outcome':'error with data'})
+            return Response({'outcome':'error with data', 'errors':serializer.errors})
 
 @api_view(['POST'])
 def create_user_and_profile(request):
