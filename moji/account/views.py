@@ -39,6 +39,7 @@ def postFile(request):
         return Response({'outcome':ser.errors})
 
 @api_view(['POST'])
+@permission_classes([])
 def send_lastSeen(request):
     if request.method =="POST":
         if not request.user.is_authenticated():
@@ -68,6 +69,7 @@ def authUser(request):
             return Response({'outcome':'error with data', 'errors':serializer.errors})
 
 @api_view(['POST'])
+@permission_classes([])
 def create_user_and_profile(request):
     if request.method == "POST":
         serializer = UserCreateSerializer(data=request.data)
@@ -75,7 +77,7 @@ def create_user_and_profile(request):
             serializer.save()
             return Response({'outcome':'success'})
         else:
-            return Response({'outcome':'error with data'})
+            return Response({'outcome':'error with data','error':serializer.errors})
 
 
 @api_view(['POST'])
@@ -129,6 +131,7 @@ def update_user_or_profile(request):
 
 
 @api_view(['GET'])
+@permission_classes([])
 def get_user_and_profile_with_content(request, username):
     if request.method == "GET":
         if not request.user.is_authenticated():
