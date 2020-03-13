@@ -167,7 +167,7 @@ BLOCKED_URLS = (
     r'^following/requests/(?P<name>\w+)/sent/$',
 )
 
-STRIPE_KEY = "sk_test_jTTjKLvfrEeL6cXjKqoF1KdB"
+STRIPE_KEY = "sk_test_jTTjKLvJKBNOI6cXjKqoF1KdB"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
